@@ -2,7 +2,7 @@ require "rack"
 
 class Rack::FootNotes
 
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
 
   def initialize(app, options = {}, &block)
     @app = app
