@@ -17,11 +17,13 @@ class Rack::FootNotes
   def call(env)
     status, headers, body = @app.call(env)
 
-    route = env['PATH_INFO']
-    file = Dir.pwd + "/#{@options[:notes_path]}" + route.gsub(/\/$/,'') + '.txt'
-    if File.exists?(file)
-      note = File.readlines(file).to_s
-      body.body.gsub!("</body>","<div id='racknotes'>#{note}</div><style>#racknotes { #{@options[:css]} #{@options[:extra_css]} }</style></body>")
+    if headers['Content-Type'] == 'text/html'
+      route = env['PATH_INFO']
+      file = Dir.pwd + "/#{@options[:notes_path]}" + route.gsub(/\/$/,'') + '.txt'
+      if File.exists?(file)
+        note = File.readlines(file).to_s
+        body.body.to_s.gsub!("</body>","<div id='racknotes'>#{note}</div><style>#racknotes { #{@options[:css]} #{@options[:extra_css]} }</style></body>")
+      end
     end
 
     @response = Rack::Response.new(body, status, headers)
