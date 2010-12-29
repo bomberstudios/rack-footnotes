@@ -2,9 +2,11 @@ require "rack"
 
 class Rack::FootNotes
 
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
 
   def initialize(app, options = {}, &block)
+    puts("Using rack-footnotes " + VERSION)
+
     @app = app
     @options = {
       :notes_path => 'notes',
@@ -22,7 +24,8 @@ class Rack::FootNotes
       file = Dir.pwd + "/#{@options[:notes_path]}" + route.gsub(/\/$/,'') + '.txt'
       if File.exists?(file)
         note = File.readlines(file).to_s
-        body.body.to_s.gsub!("</body>","<div id='racknotes'>#{note}</div><style>#racknotes { #{@options[:css]} #{@options[:extra_css]} }</style></body>")
+        body = body.body.to_s
+        body = body.gsub("</body>","<div id='racknotes'>#{note}</div><style>#racknotes { #{@options[:css]} #{@options[:extra_css]} }</style></body>")
       end
     end
 
